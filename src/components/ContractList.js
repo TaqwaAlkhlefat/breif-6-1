@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import React from 'react';
-import { Grid, GridItem, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogCloseButton, AlertDialogBody, AlertDialogFooter, Button } from '@chakra-ui/react'
+import { useDisclosure, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogCloseButton, AlertDialogBody, AlertDialogFooter, Button } from '@chakra-ui/react'
 
 export default function ContractList() {
   const [contracts, setContracts] = useState([]);
@@ -23,32 +23,61 @@ export default function ContractList() {
     setShowPopup(true);
   }
 
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const cancelRef = React.useRef()
+
+  function getRemainingDays(expirationDate) {
+    const currentDate = new Date();
+    const end = new Date(expirationDate);
+    const diffInTime = end.getTime() - currentDate.getTime();
+    const diffInDays = Math.floor(diffInTime / (1000 * 3600 * 24));
+    return diffInDays;
+  }
+
   return (
     <>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', margin: '50px' }}>
-        {contracts.map((contract, index) => (
-          <div className="card" key={contract.id} style={{ width: '19rem',  }}>
-            <div className="card-body">
-              <h5 className="card-title">{contract.contract_name}</h5>
-              <p className="card-text">
-                <strong>Signing:</strong> {contract.signing_date}
-              </p>
-              <p className="card-text">
-                <strong>Expiration:</strong> {contract.expiration_date}
-              </p>
-              <p className="card-text">
-                <strong>Total Cost:</strong> {contract.total_cost}
-              </p>
-              <p className="card-text">
-                <strong>Employee Number:</strong> {contract.employee_id}
-              </p>
-              <div className="card-footer">
-                <button className="btn btn-primary m-2" onClick={openPopup}>Contract Details</button>
-                <button className="btn btn-primary m-2">Company Details</button>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', textAlign: 'center', margin: '80px' }}>
+          {contracts.map((contract, index) => {
+            const remainingDays = getRemainingDays(contract.expiration_date);
+            let alertType;
+            if (remainingDays < 3) {
+              alertType = 'alert-danger'; // Red color
+            } else if (remainingDays < 10) {
+              alertType = 'alert-warning'; // Yellow color
+            } else {
+              alertType = 'alert-success'; // Green color
+            }
+
+            return (
+              <div className="card" key={contract.id} style={{ width: '23rem' }}>
+                <div className="card-body">
+                  <h4 className="card-title">{contract.contract_name}</h4>
+                  <p className="card-text">
+                    <strong>Signing:</strong> {contract.signing_date}
+                  </p>
+                  <p className="card-text">
+                    <strong>Expiration:</strong> {contract.expiration_date}
+                  </p>
+                  <p className="card-text">
+                    <strong>Total Cost:</strong> {contract.total_cost}
+                  </p>
+                  <p className="card-text">
+                    <strong>Employee Number:</strong> {contract.employee_id}
+                  </p>
+                  <div className="card-footer" style={{ textAlign: 'center' }}>
+                    <button className="btn btn-primary btn-sm m-2" onClick={openPopup}>Contract Details</button>
+                    <p></p>
+                    <button className="btn btn-primary m-2" onClick={onOpen}>Company Details</button>
+                    <div className={`alert p-4 ${alertType}`}>
+                      <span>Left for this offer: {remainingDays} Days</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
+            );
+          })}
+        </div>
       </div>
 
       <AlertDialog
@@ -61,28 +90,45 @@ export default function ContractList() {
         <AlertDialogOverlay />
 
         <AlertDialogContent>
-          <AlertDialogHeader>Contract Details</AlertDialogHeader>
+          <AlertDialogHeader>Contract Details: </AlertDialogHeader>
           <AlertDialogCloseButton />
           <AlertDialogBody>
             <div>
-            <b>Scope of Services: The Provider agrees to deliver premium system services to the Client as outlined in the accompanying service agreement. These services include software customization, maintenance, technical support, and feature enhancements.</b>
-            <b> Term: This Contract shall commence on the effective date stated herein and shall remain in effect for the duration specified in the service agreement, unless terminated earlier as per the termination provisions outlined within.</b>
-            <b>Payment and Fees: The Client agrees to compensate the Provider according to the payment terms outlined in the service agreement.</b>
-            <b>Confidentiality: Both Parties acknowledge their obligation to maintain the confidentiality of any proprietary or sensitive information disclosed during the course of this Contract. </b>
-            <b>Termination: Either Party may terminate this Contract by providing written notice to the other Party in accordance with the termination provisions specified in the service agreement.</b>
-            <b>Governing Law: This Contract shall be governed by and construed in accordance with the laws of the jurisdiction specified in the service agreement.</b>
+              <p>Scope of Services:</p> The Provider agrees to deliver premium system services to the Client as outlined in the accompanying service agreement. <p> </p>
+              <p>Term:</p> This Contract shall commence on the effective date stated herein and shall remain in effect for the duration specified in the service agreement, unless terminated earlier as per the termination provisions outlined within.
+              <p>Termination:</p> Either Party may terminate this Contract by providing written notice to the other Party in accordance with the termination provisions specified in the service agreement.
             </div>
           </AlertDialogBody>
           <AlertDialogFooter>
             <Button ref={React.useRef(null)} onClick={() => setShowPopup(false)}>
-              Ok 
+              Ok
             </Button>
-            {/* <Button colorScheme='red' ml={3}>
-              Yes
-            </Button> */}
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        motionPreset='slideInBottom'
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+        isOpen={isOpen}
+        isCentered
+      >
+        <AlertDialogOverlay />
+
+        <AlertDialogContent>
+          <AlertDialogHeader>Company Details: </AlertDialogHeader>
+          <AlertDialogCloseButton />
+          <AlertDialogBody>
+          Welcome to our network company! We are a leading provider of advanced networking solutions for businesses of all sizes. With our state-of-the-art technology and expert team, we deliver reliable and high-performance networking infrastructure tailored to meet your specific needs. Whether you require secure data connectivity, seamless wireless networks, or robust network management, we have you covered. Our commitment to exceptional service ensures that your network operates smoothly, allowing you to focus on your core business. Trust us for all your networking requirements and experience the power of a reliable and efficient network infrastructure
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button ref={cancelRef} onClick={onClose}>
+              Ok
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </>
-  )
+  );
 }

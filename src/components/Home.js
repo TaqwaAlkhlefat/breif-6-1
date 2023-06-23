@@ -52,26 +52,38 @@ function Home() {
 
     return (
       <>
-
-     <BrowserRouter>
-      <div className="Home">
+      <BrowserRouter>
+      <div className="App">
         <Header />
         <Routes>
-         
+          <Route path="/" element={<About />} />
+          <Route path="/ContractList" element={<ContractList />} />
+          <Route path="/" element={<Main />} />
+          <Route path="/" element={<Values />} />
+          <Route path="/" element={<Features />} />
+          <Route path="/sign_up" element={<SignUpForm />} />
+        </Routes>
+        <Footer />
+      </div>
+    </BrowserRouter>
+
+    {/* <BrowserRouter>
+      <div className="Home">
+          <Header />
+          <Routes>
+          <ContractList />
+          <Main />
+          <About />
+          <Values />
+          <Features />
           <Route exact path="/sign_up" element={<SignUpForm />} />
         </Routes>
 
         <Footer />
       </div>
-     </BrowserRouter>
+    </BrowserRouter> */}
 
-      {/* 
-      <ContractList />
-      <Main />
-      <About />
-      <Values />
-      <Features />
-      <Footer /> */}
+
       </>
     );
   }

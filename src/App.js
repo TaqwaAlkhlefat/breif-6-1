@@ -8,8 +8,8 @@ function App() {
   return (
     <div className="App">
       <ChakraProvider>
-        {/* <Home /> */}
-        <ContractList />
+        <Home />
+        {/* <ContractList /> */}
       </ChakraProvider>
     </div>
   );

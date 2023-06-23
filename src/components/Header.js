@@ -18,11 +18,11 @@ function Header() {
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
               <ul class="nav navbar-nav navbar-right">
-                <li><NavLink to="#about">ABOUT</NavLink></li>
-                <li><NavLink to="#services">SERVICES</NavLink></li>
-                <li><NavLink to="#portfolio">PORTFOLIO</NavLink></li>
-                <li><NavLink to="#pricing">PRICING</NavLink></li>
-                <li><NavLink to="#contact">CONTACT</NavLink></li>
+                <li><NavLink to="/">ABOUT</NavLink></li>
+                <li><NavLink to="/ContractList">ContractList</NavLink></li>
+                <li><NavLink to="/Main">Main</NavLink></li>
+                <li><NavLink to="/Values">Values</NavLink></li>
+                <li><NavLink to="/Features">Features</NavLink></li>
                 <li><NavLink to='/sign_up'> sign up</NavLink> </li>
                
               </ul>
