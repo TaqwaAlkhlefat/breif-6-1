@@ -52,7 +52,7 @@ function Home() {
     return (
       <>
       <Header />
-      <ContractList />
+      {/* <ContractList /> */}
       <Main />
       <About />
       <Values />
